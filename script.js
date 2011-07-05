@@ -161,7 +161,6 @@ function share_link(type) {
 
 function string2title(s) {
     s = s.replace(/^\w/g, function($0) { return $0.toUpperCase(); });
-    //s = s.replace(/\s\w/g, function($0) { return $0.toUpperCase(); });
     s = s.replace(/\s+/g, "_");
     s = s.replace("%20", " ");
     return s;
@@ -170,19 +169,16 @@ function string2title(s) {
 function stop_requests(page1, page2, trans) {
     if (ajax_requests1 && page1) {
         $.each(ajax_requests1, function (k, v) {
-            //alert("stopped page1!");
             v.abort();
         });
     }
     if (ajax_requests2 && page2) {
         $.each(ajax_requests2, function (k, v) {
-            //alert("stopped page2!");
             v.abort();
         });
     }
     if (translate_requests && trans) {
         $.each(translate_requests, function (k, v) {
-            //alert("stopped translation!" + v);
             v.stop();
             v.stopped = true;
         });
@@ -219,37 +215,31 @@ function clear_page() {
 }
 
 function main_lang() {
-    /*var res = window.location.hash.split("|")[1];
-    if (res != undefined) {
-        return res;
-    }*/
     return $("#main_select").val();
 }
 
 function attachWikiAutoComplete(expression) {
- $(expression).unautocomplete();
- $(expression).autocomplete("http://"+main_lang()+".wikipedia.org/w/api.php",  {
-    dataType: "jsonp",
-    parse: function(data) {
-      var rows = [];
-      var matches = data[1];
-      for( var i = 0; i < matches.length; i++){
-        rows[i] = { data:matches[i], value:matches[i], result:matches[i] };
-      }
-      return rows;
-    },
-    formatItem: function(row) { return row; },
-    extraParams: {
-      action: "opensearch",
-      format: "json",
-      search: function () { return $(expression).val(); } },
-    max: 10
- });
- $(expression).bind("change", function(event, ui) {
-    //$('#lang_select').val("");
-    //$('#lang_select').html("<option value=''>---</option>");
- });
- $(expression).result(function() { $("#go").click(); });
+    $(expression).unautocomplete();
+    $(expression).autocomplete("http://"+main_lang()+".wikipedia.org/w/api.php",  {
+      dataType: "jsonp",
+      parse: function(data) {
+        var rows = [];
+        var matches = data[1];
+        for( var i = 0; i < matches.length; i++){
+          rows[i] = { data:matches[i], value:matches[i], result:matches[i] };
+        }
+        return rows;
+      },
+      formatItem: function(row) { return row; },
+      extraParams: {
+        action: "opensearch",
+        format: "json",
+        search: function () { return $(expression).val(); } },
+      max: 10
+    });
+    $(expression).bind("change", function(event, ui) {
+    });
+    $(expression).result(function() { $("#go").click(); });
 }
 
 function correct_links_page1(internal) {
@@ -325,8 +315,6 @@ function correct_links_page2() {
         var l = current.attr("href");
         if (l.search(/wikipedia.org\/wiki\//) !== -1) {
             current.attr("href", "#"+l.split("/wiki/").pop().split("#")[0]+"|"+states.slice(1).join("|"));
-            //$(this).click(live_link_correct);
-            //console.log($(this).attr("href"));
             current.click(live_link_correct);
         }
         else {
@@ -409,41 +397,6 @@ function get_user_stats(user, lang_id) {
 }
 
 function get_stats(lang_id, page_name, expression) {
-    /*var url = escape("http://toolserver.org/~soxred93/articleinfo/index.php?lang="+lang_id+"&wiki=wikipedia&uselang=en&article="+encodeURI(page_name));
-    $.ajax({
-        url: loadUrl + "?url=" + url,
-        success: function(data) {
-            var generalstats = $('#generalstats', data);
-            var total_revisions = $("td:eq(3)",generalstats);
-            var first_edit = $("td:eq(9)",generalstats);
-            var first_text = first_edit.text().replace(/\(by (.+?)\)/, "(by <a href='#loading' onclick='get_user_stats\(\"$1\", \""+lang_id+"\"\);' rel='facebox'>$1</a>)");
-            var last_edit = $("td:eq(11)",generalstats);
-            var nr_editors = $("td:eq(27)",generalstats);
-            var top_editors = $('#usertable', data);
-            var editor1 = $("tr:eq(1)",top_editors);
-            var editor2 = $("tr:eq(2)",top_editors);
-            var editor3 = $("tr:eq(3)",top_editors);
-            var editor4 = $("tr:eq(4)",top_editors);
-            var editor5 = $("tr:eq(5)",top_editors);
-            $(expression).html("<hr/>Total revisions: <b>"+total_revisions.text()+"</b> - <i>Created on "+
-                               first_text+"</i> - <i>Last edit: "+
-                               last_edit.text()+"</i><br />"+
-                               "Number of editors: <b>"+nr_editors.text()+
-                               "</b> - Top 5 editors: "+
-                               "<a href='#loading' onclick='get_user_stats(\""+encodeURI($("td > a:eq(0)", editor1).text())+"\",\""+lang_id+"\");' rel='facebox'>"+$("td > a:eq(0)", editor1).text()+"</a>"+
-                               " ("+$("td:eq(1)", editor1).text()+"), "+
-                               "<a href='#loading' onclick='get_user_stats(\""+encodeURI($("td > a:eq(0)", editor2).text())+"\",\""+lang_id+"\");' rel='facebox'>"+$("td > a:eq(0)", editor2).text()+"</a>"+
-                               " ("+$("td:eq(1)", editor2).text()+"), "+
-                               "<a href='#loading' onclick='get_user_stats(\""+encodeURI($("td > a:eq(0)", editor3).text())+"\",\""+lang_id+"\");' rel='facebox'>"+$("td > a:eq(0)", editor3).text()+"</a>"+
-                               " ("+$("td:eq(1)", editor3).text()+"), "+
-                               "<a href='#loading' onclick='get_user_stats(\""+encodeURI($("td > a:eq(0)", editor4).text())+"\",\""+lang_id+"\");' rel='facebox'>"+$("td > a:eq(0)", editor4).text()+"</a>"+
-                               " ("+$("td:eq(1)", editor4).text()+"), "+
-                               "<a href='#loading' onclick='get_user_stats(\""+encodeURI($("td > a:eq(0)", editor5).text())+"\",\""+lang_id+"\");' rel='facebox'>"+$("td > a:eq(0)", editor5).text()+"</a>"+
-                               " ("+$("td:eq(1)",editor5).text()+")<hr/>");
-            $('a[rel*=facebox]').facebox();
-        }
-    });*/
-
     var url = "http://toolserver.org/~sonet/api.php?lang="+lang_id+"&wiki=wikipedia&article="+encodeURI(page_name)+"&editors&max_editors=5&callback=?";
     $.getJSON(url, function(data) {
         var first = new Date(data.first_edit.timestamp*1000);
@@ -575,28 +528,6 @@ $(document).ready(function () {
     $.History.bind(function(state){
         var states = state.split("|");
         var changed_main = false;
-        /*if (states[0].substr(0, 5) === "LINK:" && states.length === 4) {
-            var current_lang = states[3];
-            var old_name = states[0].slice(5);
-            var new_name = "";
-            $.getJSON('http://' + current_lang + '.wikipedia.org/w/api.php?format=json&action=query&prop=langlinks&lllimit=500&titles=' + old_name + '&redirects=&callback=?',
-            function(data) {
-                $.each(data.query.pages, function(i, page) {
-                    $.each(page.langlinks, function(k, lang) {
-                        if (lang.lang === main_lang()) {
-                            new_name = lang["*"];
-                            return false;
-                        }
-                    });
-                });
-                if (new_name) {
-                    $.History.go("|"+states[1]+"|" + new_name.replace(/\s/g, "_") + "|" + current_lang);
-                }
-                else {
-                    alert("Page not available in your main language!");
-                }
-            });
-        }*/
 
         if (states.length>=2) {
             $("#main_select").val(states[1]);
@@ -671,12 +602,6 @@ $(document).ready(function () {
         if ($("#search").val()) {
             $("#go").click();
         }
-        /*
-        var states = window.location.hash.split("|");
-        if (states.length >= 3 && $("#search").val() === states[2]) {
-            states[1] = $(this).val();
-            $.History.go("|"+states.join("|"));
-        }*/
     });
 
     $('#lang_select').change(function() {
