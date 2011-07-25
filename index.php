@@ -154,7 +154,7 @@
                 </div>
                 <div id="magnifier">
                 <span class="tagline_left"><img style="width:15px;" src="img/arrow.gif" alt="search" /> Move here to search another page to compare</span><span class="tagline">Manypedia! - <em>"Comparing Linguistic Points Of View (LPOV) of different language Wikipedias!"</em></span><span class="tagline_right">
-                <iframe src="http://www.facebook.com/plugins/like.php?app_id=238278506201020&amp;href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FManypedia%2F202808583098332&amp;send=false&amp;layout=button_count&amp;width=30&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:80px; height:22px;"></iframe>
+                <iframe src="http://www.facebook.com/plugins/like.php?app_id=238278506201020&amp;href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FManypedia%2F202808583098332&amp;send=false&amp;layout=button_count&amp;width=30&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:22px;"></iframe>
                 <a href="#" onclick="help();">Help</a> | <a href="#about" onclick="get_about()" rel="facebox">About/FAQ</a></span>
                 </div>
             </div>

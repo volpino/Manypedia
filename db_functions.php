@@ -1,5 +1,5 @@
 <?php
-include("db_config.php")
+include("db_config.php");
 
 mysql_connect($hostname, $username, $password)
     or die("Unable to connect to MySQL");
@@ -42,7 +42,7 @@ function create_table_featured() {
 }
 
 function get_featured() {
-    $qry = "SELECT page, first_lang, second_lang FROM `aimashup11_featured` ORDER BY RAND() DESC LIMIT 4";
+    $qry = "SELECT page, first_lang, second_lang FROM `aimashup11_featured` WHERE page!='User:Phauly/Land_Manypedia' ORDER BY RAND() DESC LIMIT 4";
     $result = mysql_query($qry);
     $res = "";
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {

@@ -468,7 +468,7 @@ function process_translation(lang_id, page_name) {
     clear_page2();
     current_url = window.location.href;
     document.title = 'Manypedia - Comparing page "'+states[2].replace(/_/g, " ")+'" from the '+lang_set[main_lang()]+" and the "+lang_set[lang_id]+" Wikipedia";
-    $("#page2_title").html('<span style="font-size:150%;">"'+page_name+'"</span>'+" from the <span style='font-size:150%;'>"+lang_set[lang_id]+"</span> <img src='img/flags/"+lang_id+".png' /> Wikipedia (translated into "+lang_set[main_lang()]+" )");
+    $("#page2_title").html('<span style="font-size:150%;">"'+page_name+'"</span>'+" from the <span style='font-size:150%;'>"+lang_set[lang_id]+"</span> <img src='img/flags/"+lang_id+".png' /> Wikipedia (translated into "+lang_set[main_lang()]+")");
 
     var url = escape("http://" + lang_id + ".wikipedia.org/w/index.php?title=" + encodeURI(page_name) + "&action=render");
 
