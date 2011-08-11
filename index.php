@@ -135,7 +135,7 @@
                     <input type="submit" value="Go" id="go" /><br/>
                     <label for="lang_select">Compare with the </label>
                     <select id="lang_select" name="lang_select">
-                        <option value="">Choose language for translation...</option>
+                        <option value="">Choose language Wikipedia to be compared</option>
                     </select>
                 </div>
                 <div id="most_searched">

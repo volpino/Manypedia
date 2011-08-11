@@ -208,7 +208,7 @@ function clear_page() {
     $("#img1").html("");
     $("#tag_cloud1").text("");
     $("#source1").html("");
-    $("#lang_select").html("<option value=''>Choose language for translation...</option>");
+    $("#lang_select").html("<option value=''>Choose language Wikipedia to be compared</option>");
     stop_requests(true, false, false);
     current_trans = "";
     clear_page2();
