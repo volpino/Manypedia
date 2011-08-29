@@ -22,6 +22,9 @@ var ajax_requests1 = [];
 var ajax_requests2 = [];
 var translate_requests = [];
 var current_search = "";
+var translation_disabled = false;
+var lang_id2;
+var page_name2;
 
 var lang_set = {};
 lang_set.af = "Afrikaans";
@@ -404,7 +407,8 @@ function get_stats(lang_id, page_name, expression) {
         var res = "<hr/>Total revisions: <b>"+data.count+"</b> - <i>Created on "+
                   first.getDay()+"/"+(first.getMonth()+1)+"/"+first.getFullYear()+" by "+"<a href='#loading' onclick='get_user_stats(\""+encodeURI(data.first_edit.user)+"\",\""+lang_id+"\");' rel='facebox'>"+data.first_edit.user+"</a>"+
                   "</i> - <i>Last edit: "+
-                  last.getDay()+"/"+(last.getMonth()+1)+"/"+last.getFullYear()+"</i><br />"+
+                  last.getDay()+"/"+(last.getMonth()+1)+"/"+last.getFullYear()+"</i> - "+
+                  "<a href='http://sonetlab.fbk.eu/wikitrip/#|"+lang_id+"|"+page_name+"' target='_blank'>See gender and world location of editors</a><br />"+
                   "Number of editors: <b>"+data.editor_count+
                   "</b> - Top 5 editors: ";
         $.each(data.editors, function(i, ed) {
@@ -462,13 +466,31 @@ function process_search(search_request) {
 
 }
 
+function enable_translation() {
+    translation_disabled = false;
+    process_translation(lang_id2, page_name2);
+}
+
+function disable_translation() {
+    translation_disabled = true;
+    process_translation(lang_id2, page_name2);
+}
+
 function process_translation(lang_id, page_name) {
     var states = window.location.hash.split("|");
     correct_links_page1(false);
     clear_page2();
     current_url = window.location.href;
     document.title = 'Manypedia - Comparing page "'+states[2].replace(/_/g, " ")+'" from the '+lang_set[main_lang()]+" and the "+lang_set[lang_id]+" Wikipedia";
-    $("#page2_title").html('<span style="font-size:150%;">"'+page_name+'"</span>'+" from the <span style='font-size:150%;'>"+lang_set[lang_id]+"</span> <img src='img/flags/"+lang_id+".png' /> Wikipedia (translated into "+lang_set[main_lang()]+")");
+    var msg = '<span style="font-size:150%;">"'+page_name+'"</span>'+" from the <span style='font-size:150%;'>"+lang_set[lang_id]+"</span> <img src='img/flags/"+lang_id+".png' /> Wikipedia";
+    if (translation_disabled) {
+        msg += " (<a href='javascript:enable_translation()'>enable translation into "+lang_set[main_lang()]+"</a>)";
+    }
+    else {
+        msg += " (translated into "+lang_set[main_lang()]+
+               " <a href='javascript:disable_translation()'>disable translation</a>)";
+    }
+    $("#page2_title").html(msg);
 
     var url = escape("http://" + lang_id + ".wikipedia.org/w/index.php?title=" + encodeURI(page_name) + "&action=render");
 
@@ -477,34 +499,39 @@ function process_translation(lang_id, page_name) {
         type: "GET",
         url: loadUrl + "?url=" + url,
         success: function(data) {
-            setTimeout(function() {
             var content = $("#page2")[0];
             content = replaceHtml(content, data);
-            $("#tag_cloud2").html("<p style='font-size:20px;'>Translation from "+lang_set[lang_id]+" to "+lang_set[main_lang()]+" in progress...</p>");
             /*fix_internal_links("#page2");*/
             if (!$.browser.msie ) {
                 add_images("#page2", "#img2");
                 correct_links_page2();
             }
-            lang_id = ('he' == lang_id) ? 'iw' : lang_id;
-            var lang_main = main_lang();
-            lang_main = ('he' == lang_main) ? 'iw' : lang_main;
             $("#source2").html('<p>Source: <a target="_blank" href="http://'+lang_id+'.wikipedia.org/wiki/'+page_name+'">"'+page_name.replace(/_/g, " ")+'" from the '+lang_set[lang_id]+' Wikipedia  - http://'+lang_id+'.wikipedia.org/wiki/'+page_name+' (open in new window)</a> released under Creative Commons Attribution-ShareAlike License.</p>'); 
-            var tran_req = $("#page2").translateTextNodes(lang_id, lang_main, {
-                complete: function() {
-                    $("#tag_cloud2").text("Translation complete!");
-                    if (!$.browser.msie ) {
-                        $('#page2').dynaCloud('#tag_cloud2');
+            if (!translation_disabled) {
+                $("#tag_cloud2").html("<p style='font-size:20px;'>Translation from "+lang_set[lang_id]+" to "+lang_set[main_lang()]+" in progress...</p>");
+                lang_id = ('he' == lang_id) ? 'iw' : lang_id;
+                var lang_main = main_lang();
+                lang_main = ('he' == lang_main) ? 'iw' : lang_main;
+                var tran_req = $("#page2").translateTextNodes(lang_id, lang_main, {
+                    complete: function() {
+                        $("#tag_cloud2").text("Translation complete!");
+                        if (!$.browser.msie ) {
+                            $('#page2').dynaCloud('#tag_cloud2');
+                        }
+                    },
+                    error: function() {
+                        $("#tag_cloud2").text("There seems to be problems translating the page :(");
+                        //$("#tag_cloud2").animate({backgroundColor: "#EFB3B5"}, 1000);
+                        $("#tag_cloud2").css("background-color", "#EFB3B5");
                     }
-                },
-                error: function() {
-                    $("#tag_cloud2").text("There seems to be problems translating the page :(");
-                    //$("#tag_cloud2").animate({backgroundColor: "#EFB3B5"}, 1000);
-                    $("#tag_cloud2").css("background-color", "#EFB3B5");
+                });
+                translate_requests.push(tran_req);
+            }
+            else {
+                if (!$.browser.msie ) {
+                  $('#page2').dynaCloud('#tag_cloud2');
                 }
-            });
-            translate_requests.push(tran_req);
-            }, 3000);
+            }
         }
     });
     ajax_requests2.push(req);
@@ -549,7 +576,9 @@ $(document).ready(function () {
                 $.each(data.query.pages, function(i,page) {
                     $.each(page.langlinks, function(k, lang) {
                         if (lang.lang == states[3]) {
-                            process_translation(lang.lang, lang["*"]);
+                            lang_id2 = lang.lang;
+                            page_name2 = lang["*"];
+                            process_translation(lang_id2, page_name2);
                             done = true;
                             return false;
                         }
