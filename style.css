@@ -126,10 +126,22 @@ label {
     padding-top: 5%;
 }
 
+#comparison_index {
+    text-align: center;
+    padding: 10px;
+}
+
+#comparison_index a {
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 #page1_container {
     border: 1px solid #AAA;
     width: 47%;
-    height: 100%;
+    height: 95%;
     float: left;
     padding: 1%;
     background: #FFF;
@@ -139,7 +151,7 @@ label {
 #page2_container {
     border: 1px solid #AAA;
     width: 47%;
-    height: 100%;
+    height: 95%;
     float: right;
     padding: 1%;
     background: #FFF;

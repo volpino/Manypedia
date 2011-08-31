@@ -161,6 +161,7 @@
             <div id="title_div">
             </div>
             <div id="container">
+                <div id="comparison_index"></div>
                 <div id="page1_container">
                     <div id="page1_header">
                         <h3 id="page1_title"></h3>

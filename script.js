@@ -25,6 +25,7 @@ var current_search = "";
 var translation_disabled = false;
 var lang_id2;
 var page_name2;
+var comparison_data;
 
 var lang_set = {};
 lang_set.af = "Afrikaans";
@@ -192,25 +193,27 @@ function stop_requests(page1, page2, trans) {
 }
 
 function clear_page2() {
-    $("#page2_title").html("");
-    $("#tag_cloud2").text("");
+    $("#page2_title").empty();
+    $("#tag_cloud2").empty();
     $("#tag_cloud2").css("background-color", "#FFFFFF");
-    $("#stats2").text("");
-    $("#img2").html("");
+    $("#stats2").empty();
+    $("#img2").empty();
     document.title = "Manypedia";
-    $("#source2").html("");
+    $("#source2").empty();
+    $("#comparison_index").text("Computing page similarity... (may take a while)");
+    comparison_data = undefined;
     stop_requests(false, true, true);
 }
 
 function clear_page() {
-    $("#page1").html("");
-    $("#page2").html("");
-    $("#stats1").text("");
-    $("#lang_select").html("");
-    $("#page1_title").html("");
-    $("#img1").html("");
-    $("#tag_cloud1").text("");
-    $("#source1").html("");
+    $("#page1").empty();
+    $("#page2").empty();
+    $("#stats1").empty();
+    $("#lang_select").empty();
+    $("#page1_title").empty();
+    $("#img1").empty();
+    $("#tag_cloud1").empty();
+    $("#source1").empty();
     $("#lang_select").html("<option value=''>Choose language Wikipedia to be compared</option>");
     stop_requests(true, false, false);
     current_trans = "";
@@ -476,6 +479,47 @@ function disable_translation() {
     process_translation(lang_id2, page_name2);
 }
 
+function show_comparison_data() {
+    if (!comparison_data) {
+        return;
+    }
+    var states = window.location.hash.split("|");
+    var d = comparison_data.matching;
+    var msg = "<div class='user_data'><p><a href='#comparison_help'>How is this index calculated?</a><br/></p>";
+    msg += "<h2>Matching ("+d.length+")</h2><table>";
+    for (i in d) {
+        msg += "<tr><td style='width:40%'>"+d[i][0].replace(/_/g, " ") +
+               "</td><td style='width:20%;text-align:center;'> = </td><td style='width:40%;'>"+
+               d[i][1].replace(/_/g, " ")+"</td></tr>";
+    }
+    msg += "</table>";
+
+    d = comparison_data.nonmatching1;
+    msg += "<br/><hr/><br/><table><td style='width:50%;font-weight:bold;'>Non-matching \""+
+           comparison_data.a2.replace(/_/g, " ")+"\" ("+d.length+
+           ")</td><td style='width:50%'></td>";
+    for (i in d) {
+        msg += "<tr><td style='width:50%'>"+d[i].replace(/_/g, " ")+
+               "</td><td style='width:50%'></td></tr>";
+    }
+    msg += "</table>";
+
+    d = comparison_data.nonmatching2;
+    msg += "<br/><hr/><br/><table><td style='width:50%'></td><td style='width:50%;font-weight:bold;'>Non-matching \""+
+           comparison_data.a2.replace(/_/g, " ")+"\" ("+d.length+
+           ")</td>";
+    for (i in d) {
+        msg += "<tr><td style='width:50%'></td><td style='width:50%'>"+
+               d[i].replace(/_/g, " ")+"</td></tr>";
+    }
+    msg += "</table><br/><br/><br/><h2 id='comparison_help'>How is this index calculated?</h2>"+
+           "<p>The algorithm we developed extracts two list of pages that are linked in each article."+
+           "Then it tries to match the pages that are about the same concept using interwiki links.</p>"+
+           "<p>If two pages link to the same concepts they probably express the same concept in a similar way.</p>"+
+           "</div>";
+    $.facebox(msg);
+}
+
 function process_translation(lang_id, page_name) {
     var states = window.location.hash.split("|");
     correct_links_page1(false);
@@ -491,6 +535,20 @@ function process_translation(lang_id, page_name) {
                " <a href='javascript:disable_translation()'>disable translation</a>)";
     }
     $("#page2_title").html(msg);
+
+    $.getJSON('http://toolserver.org/~sonet/api_comparison.php?l1='+main_lang()+'&a1='+encodeURI(string2title(states[2]))+'&l2='+lang_id+'&a2='+page_name+'&callback=?',
+        function(data) {
+            if (states[2].replace(/_/g, " ") === data.a1.replace(/_/g, " ") &&
+                page_name.replace(/_/g, " ") === data.a2.replace(/_/g, " ")) {
+                $("#comparison_index").html(
+                    "<a href='javascript:show_comparison_data()'>Concepts similarity: "+
+                    (isNaN(data.result) ? data.result : Math.round(data.result*100))+
+                    "% (?)</a>"
+                );
+                comparison_data = data;
+            }
+        }
+    );
 
     var url = escape("http://" + lang_id + ".wikipedia.org/w/index.php?title=" + encodeURI(page_name) + "&action=render");
 
