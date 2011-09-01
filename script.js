@@ -545,7 +545,7 @@ function show_comparison_data() {
            '</ol>The formula is the following one:'+
            '<img src="img/concepts_similarity_formula.png" alt="formula" />'+
            'You can read the great paper by Brent Hecht and Darren Gergle <a href="http://www.brenthecht.com/papers/bhecht_chi2010_towerofbabel.pdf">The Tower of Babel Meets Web 2.0: User-Generated Content and Its Applications in a Multilingual Context</a> for a better explanation of the idea behind the concept similarity computation, sub-concept diversity.'+
-           'If you want to dig on the details of how the algorithm works, you can also <a href="https://github.com/volpino/Manypedia">read the Python code powering Manypedia</a>, which we have released as open source Free Software under the Affero GPL licence.</p>'+
+           'If you want to dig on the details of how the algorithm works, you can also <a href="https://github.com/volpino/Manypedia">read the code powering Manypedia</a>, which we have released as open source Free Software under the Affero GPL licence.</p>'+
            "</div>";
     $.facebox(msg);
 }
