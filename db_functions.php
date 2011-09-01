@@ -4,7 +4,7 @@ include("db_config.php");
 mysql_connect($hostname, $username, $password)
     or die("Unable to connect to MySQL");
 mysql_select_db($db_name)
-    or die("Could not selet db!");
+    or die("Could not select db!");
 
 function create_table_logs() {
     $qry = "CREATE TABLE IF NOT EXISTS `aimashup11_logs` (

@@ -264,6 +264,7 @@ label {
 .user_data {
     height: 550px;
     width: 800px;
+    padding: 20px;
     overflow: auto;
 }
 

@@ -200,7 +200,7 @@ function clear_page2() {
     $("#img2").empty();
     document.title = "Manypedia";
     $("#source2").empty();
-    $("#comparison_index").text("Computing page similarity... (may take a while)");
+    $("#comparison_index").text("Computing concepts similarity... (may take a while)");
     comparison_data = undefined;
     stop_requests(false, true, true);
 }
@@ -484,9 +484,28 @@ function show_comparison_data() {
         return;
     }
     var states = window.location.hash.split("|");
+    var a1 = comparison_data.a1.replace(/_/g, " ");
+    var a2 = comparison_data.a2.replace(/_/g, " ");
+    var l1 = lang_set[comparison_data.l1];
+    var l2 = lang_set[comparison_data.l2];
+    var r = (isNaN(comparison_data.result) ?
+             comparison_data.result : Math.round(comparison_data.result*100)+"%");
+    var links1 = comparison_data.matching.length + comparison_data.nonmatching1.length;
+    var links2 = comparison_data.matching.length + comparison_data.nonmatching2.length;
     var d = comparison_data.matching;
-    var msg = "<div class='user_data'><p><a href='#comparison_help'>How is this index calculated?</a><br/></p>";
-    msg += "<h2>Matching ("+d.length+")</h2><table>";
+    var msg = "<div class='user_data'><p style='text-align:center;font-weight:bold;'>The concepts similarity between</p>" +
+              '<table style="width:100%;text-align:center;"><tr><td style="width:45%;font-size:1.2em;"><b>"'+a1+
+              '"</b></td><td> and </td><td style="width:45%;font-size:1.2em;"><b>"'+a2+
+              '"</b></td></tr><tr><td>from the '+l1+' Wikipedia</td><td></td><td>from the '+l2+' Wikipedia</td></tr></table>'+
+              '<p style="text-align:center;font-weight:bold;font-size:1.4em">is '+r+'<br/><br/></p>'+
+              '<table style="width:100%"><tr><td style="width:45%;text-align:left;">Links to Wikipedia pages = '+links1+
+              '</td><td style="width:45%;text-align:right;">Links to Wikipedia pages = '+links2+'</td></tr></table>'+
+              '<p style="text-align:center;">Links to equivalent pages = '+
+              d.length+'</p>'+
+              '<p style="text-align:center;">Concept similarity = '+d.length+
+              '/'+Math.min(links1, links2)+' = '+r+'</p>';
+              "<p><a href='#comparison_help'>How is this index calculated?</a><br/></p>";
+    msg += "<br/><br/><br/><h2>Links to equivalent pages = "+d.length+"</h2><table style='width:100%;'>";
     for (i in d) {
         msg += "<tr><td style='width:40%'>"+d[i][0].replace(/_/g, " ") +
                "</td><td style='width:20%;text-align:center;'> = </td><td style='width:40%;'>"+
@@ -495,9 +514,8 @@ function show_comparison_data() {
     msg += "</table>";
 
     d = comparison_data.nonmatching1;
-    msg += "<br/><hr/><br/><table><td style='width:50%;font-weight:bold;'>Non-matching \""+
-           comparison_data.a2.replace(/_/g, " ")+"\" ("+d.length+
-           ")</td><td style='width:50%'></td>";
+    msg += "<br/><hr/><br/><table style='width:100%;'><td style='width:50%;font-weight:bold;'>Links present only in \""+
+           a1+"\" = "+d.length+"</td><td style='width:50%'></td>";
     for (i in d) {
         msg += "<tr><td style='width:50%'>"+d[i].replace(/_/g, " ")+
                "</td><td style='width:50%'></td></tr>";
@@ -505,17 +523,29 @@ function show_comparison_data() {
     msg += "</table>";
 
     d = comparison_data.nonmatching2;
-    msg += "<br/><hr/><br/><table><td style='width:50%'></td><td style='width:50%;font-weight:bold;'>Non-matching \""+
-           comparison_data.a2.replace(/_/g, " ")+"\" ("+d.length+
-           ")</td>";
+    msg += "<br/><hr/><br/><table style='width:100%;'><td style='width:50%'></td><td style='width:50%;font-weight:bold;'>Links present only in \""+
+           a2+"\" = "+d.length+"</td>";
     for (i in d) {
         msg += "<tr><td style='width:50%'></td><td style='width:50%'>"+
                d[i].replace(/_/g, " ")+"</td></tr>";
     }
     msg += "</table><br/><br/><br/><h2 id='comparison_help'>How is this index calculated?</h2>"+
-           "<p>The algorithm we developed extracts two list of pages that are linked in each article."+
-           "Then it tries to match the pages that are about the same concept using interwiki links.</p>"+
-           "<p>If two pages link to the same concepts they probably express the same concept in a similar way.</p>"+
+           '<p>The "Concept similarity" is computed based on outlinks, or links in one Wikipedia article pointing to another article.'+
+           'The percentage is basically related to "sub-concept diversity" ad introduced in a <a href="http://www.brenthecht.com/papers/bhecht_chi2010_towerofbabel.pdf">great paper</a> by Brent Hecht and Darren Gergle.'+
+           'As Brent and Darren explain, if two articles on the same concept (e.g. "Sarah Palin") in two languages define the concept in a nearly identical fashion, they should link to articles on nearly all the same concepts (e.g. "John McCain", "Fox News", etc.). If,  on  the  other  hand,  there  is great  sub-concept diversity, these articles would link to very few articles about the same concepts.'+
+           '<br />So, Manypedia'+
+           '<ol>'+
+           '<li>extracts at runtime the list of outlinks for the two compared pages,</li>'+
+           '<li>removes links to Wikipedia pages whose first character is a number (this is an imperfect but computable-at-runtime heuristics for removing dates and time-related links, which, as pointed out by Brent and Darren, form a substantial percentage of outlinks on many pages but different Wikipedias exhibit very different policies about linking to these concepts),</li>'+
+           '<li>gets the shortest list of links, since the number of matching links cannot be more than the minimum number of links on the two compared pages. Let\'s assume this is the page in the Italian Wikipedia and the page with more links is the one from English Wikipedia.</li>'+
+           '<li>for each link of the shortest list of links (e.g. of the Italian Wikipedia page), asks the Wikipedia API what is the interwiki linked page in the other Wikipedia (English), if present. For example, the page "Roma" from Italian Wikipedia interwiki links to the page "Rome" from English Wikipedia. If the Italian page is a redirect (for example, "Città di Roma" is a redirect to "Roma"), interwiki links are requested about the redirect-to page.</li>'+
+           '<li>for each link of the longer list of links (e.g. English Wikipedia page), if the page is a redirect, replaces the page with the redirect-to page. This "normalization" process is required since the two compared pages might refer to the same concept but linking to different redirect pages.</li>'+
+           '<li>loops over the shortest list of links (e.g. of the Italian Wikipedia page), considering the title of the pages in the other language (e.g. English) and find matching links in the longer list of links (e.g. English). If in the shorter list of links, there was a link with no interwiki link associated, of course this will be a non-matching link and this is correct since it refers to a concept that is used in the description in one language but not used in the description in the other language.</li>'+
+           '<li>lastly, the percentage is computed as number of matching links divided by number of links present in the shortest list multiplied by 100.</li>'+
+           '</ol>The formula is the following one:'+
+           '<img src="img/concepts_similarity_formula.png" alt="formula" />'+
+           'You can read the great paper by Brent Hecht and Darren Gergle <a href="http://www.brenthecht.com/papers/bhecht_chi2010_towerofbabel.pdf">The Tower of Babel Meets Web 2.0: User-Generated Content and Its Applications in a Multilingual Context</a> for a better explanation of the idea behind the concept similarity computation, sub-concept diversity.'+
+           'If you want to dig on the details of how the algorithm works, you can also <a href="https://github.com/volpino/Manypedia">read the Python code powering Manypedia</a>, which we have released as open source Free Software under the Affero GPL licence.</p>'+
            "</div>";
     $.facebox(msg);
 }
@@ -539,11 +569,11 @@ function process_translation(lang_id, page_name) {
     $.getJSON('http://toolserver.org/~sonet/api_comparison.php?l1='+main_lang()+'&a1='+encodeURI(string2title(states[2]))+'&l2='+lang_id+'&a2='+page_name+'&callback=?',
         function(data) {
             if (states[2].replace(/_/g, " ") === data.a1.replace(/_/g, " ") &&
-                page_name.replace(/_/g, " ") === data.a2.replace(/_/g, " ")) {
+                page_name2.replace(/_/g, " ") === data.a2.replace(/_/g, " ")) {
                 $("#comparison_index").html(
                     "<a href='javascript:show_comparison_data()'>Concepts similarity: "+
-                    (isNaN(data.result) ? data.result : Math.round(data.result*100))+
-                    "% (?)</a>"
+                    (isNaN(data.result) ? data.result : Math.round(data.result*100)+"%")+
+                    " (?)</a>"
                 );
                 comparison_data = data;
             }

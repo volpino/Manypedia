@@ -190,7 +190,7 @@
                 </div>
             </div>
             <div id="site_footer">
-                <p>Manypedia is a project of <a href="http://www.gnuband.org">Paolo Massa</a> and <a href="http://autistici.org/fox/">Federico "fox" Scrinzi</a> of <a href="http://sonet.fbk.eu">SoNet group at FBK</a>. We love but are not affiliated with Wikipedia. Manypedia content is released under <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike License</a>.<img alt="CC" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /> <a href="#about" rel="facebox" onclick="get_about();">Read more</a>.</p>
+                <p>Manypedia is a project of <a href="http://www.gnuband.org">Paolo Massa</a> and <a href="http://autistici.org/fox/">Federico "fox" Scrinzi</a> of <a href="http://sonet.fbk.eu">SoNet group at FBK</a>. We love but are not affiliated with Wikipedia. <a href="https://github.com/SoNetFBK/Manypedia">Manypedia is free software</a> under Affero GPL. Manypedia content is released under <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-Share Alike License</a>.<img alt="CC" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /> <a href="#about" rel="facebox" onclick="get_about();">Read more</a>.</p>
             </div>
         </div>
         <div id="about" style="display:none;">
