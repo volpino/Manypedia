@@ -200,7 +200,7 @@ function clear_page2() {
     $("#img2").empty();
     document.title = "Manypedia";
     $("#source2").empty();
-    $("#comparison_index").text("Computing concepts similarity... (may take a while)");
+    $("#comparison_index").empty();
     comparison_data = undefined;
     stop_requests(false, true, true);
 }
@@ -554,6 +554,7 @@ function process_translation(lang_id, page_name) {
     var states = window.location.hash.split("|");
     correct_links_page1(false);
     clear_page2();
+    $("#comparison_index").text("Computing concepts similarity... (may take a while)");
     current_url = window.location.href;
     document.title = 'Manypedia - Comparing page "'+states[2].replace(/_/g, " ")+'" from the '+lang_set[main_lang()]+" and the "+lang_set[lang_id]+" Wikipedia";
     var msg = '<span style="font-size:150%;">"'+page_name+'"</span>'+" from the <span style='font-size:150%;'>"+lang_set[lang_id]+"</span> <img src='img/flags/"+lang_id+".png' /> Wikipedia";
