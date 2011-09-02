@@ -493,7 +493,7 @@ function show_comparison_data() {
     var links1 = comparison_data.matching.length + comparison_data.nonmatching1.length;
     var links2 = comparison_data.matching.length + comparison_data.nonmatching2.length;
     var d = comparison_data.matching;
-    var msg = "<div class='user_data'><p style='text-align:center;font-weight:bold;'>The concepts similarity between</p>" +
+    var msg = "<div class='user_data'><p id='comparison_top' style='text-align:center;font-weight:bold;'>The concepts similarity between</p>" +
               '<table style="width:100%;text-align:center;"><tr><td style="width:45%;font-size:1.2em;"><b>"'+a1+
               '"</b></td><td> and </td><td style="width:45%;font-size:1.2em;"><b>"'+a2+
               '"</b></td></tr><tr><td>from the '+l1+' Wikipedia</td><td></td><td>from the '+l2+' Wikipedia</td></tr></table>'+
@@ -503,9 +503,9 @@ function show_comparison_data() {
               '<p style="text-align:center;">Links to equivalent pages = '+
               d.length+'</p>'+
               '<p style="text-align:center;">Concept similarity = '+d.length+
-              '/'+Math.min(links1, links2)+' = '+r+'</p>';
-              "<p><a href='#comparison_help'>How is this index calculated?</a><br/></p>";
-    msg += "<br/><br/><br/><h2>Links to equivalent pages = "+d.length+"</h2><table style='width:100%;'>";
+              '/'+Math.min(links1, links2)+' = '+r+'</p>' +
+              "<p style='text-align:center;'><br/><a href='#comparison_help'>How is this index calculated?</a></p>";
+    msg += "<br/><br/><h2>Links to equivalent pages = "+d.length+"</h2><table style='width:100%;'>";
     for (i in d) {
         msg += "<tr><td style='width:40%'>"+d[i][0].replace(/_/g, " ") +
                "</td><td style='width:20%;text-align:center;'> = </td><td style='width:40%;'>"+
@@ -529,7 +529,7 @@ function show_comparison_data() {
         msg += "<tr><td style='width:50%'></td><td style='width:50%'>"+
                d[i].replace(/_/g, " ")+"</td></tr>";
     }
-    msg += "</table><br/><br/><br/><h2 id='comparison_help'>How is this index calculated?</h2>"+
+    msg += "</table><br/><br/><br/><h2 id='comparison_help'>How is this index calculated? <a href='#comparison_top'>Top</a></h2>"+
            '<p>The "Concept similarity" is computed based on outlinks, or links in one Wikipedia article pointing to another article.'+
            'The percentage is basically related to "sub-concept diversity" ad introduced in a <a href="http://www.brenthecht.com/papers/bhecht_chi2010_towerofbabel.pdf">great paper</a> by Brent Hecht and Darren Gergle.'+
            'As Brent and Darren explain, if two articles on the same concept (e.g. "Sarah Palin") in two languages define the concept in a nearly identical fashion, they should link to articles on nearly all the same concepts (e.g. "John McCain", "Fox News", etc.). If,  on  the  other  hand,  there  is great  sub-concept diversity, these articles would link to very few articles about the same concepts.'+
