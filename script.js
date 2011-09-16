@@ -576,6 +576,12 @@ function process_translation(lang_id, page_name) {
                     (isNaN(data.result) ? data.result : Math.round(data.result*100)+"%")+
                     " (?)</a>"
                 );
+                $("#comparison_index").css({opacity:0});
+                for (var i=0; i<2; i++) {
+                    $("#comparison_index").animate({opacity:1}, 800);
+                    $("#comparison_index").animate({opacity:0.25}, 800);
+                }
+                $("#comparison_index").animate({opacity:1}, 800);
                 comparison_data = data;
             }
         }
@@ -666,7 +672,7 @@ $(document).ready(function () {
                     $.each(page.langlinks, function(k, lang) {
                         if (lang.lang == states[3]) {
                             lang_id2 = lang.lang;
-                            page_name2 = lang["*"];
+                            page_name2 = lang["*"].split("#")[0];
                             process_translation(lang_id2, page_name2);
                             done = true;
                             return false;
