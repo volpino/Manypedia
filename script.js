@@ -472,11 +472,17 @@ function process_search(search_request) {
 function enable_translation() {
     translation_disabled = false;
     process_translation(lang_id2, page_name2);
+    var states = window.location.hash.split("|");
+    states[4] = "1";
+    $.History.go(states.join("|"));
 }
 
 function disable_translation() {
     translation_disabled = true;
     process_translation(lang_id2, page_name2);
+    var states = window.location.hash.split("|");
+    states[4] = "0";
+    $.History.go(states.join("|"));
 }
 
 function show_comparison_data() {
@@ -665,9 +671,12 @@ $(document).ready(function () {
                 current_page = states[2];
                 current_main = states[1];
                 changed_main = true;
+                if (states.length === 5) {
+                    translation_disabled = states[4] === "0" ? true : false;
+                }
             }
         }
-        if ((states.length === 4) && ((current_trans != states[3]) || changed_main)) {
+        if ((states.length >= 4) && ((current_trans != states[3]) || changed_main)) {
             current_trans = states[3];
             // get langs
             $.getJSON('http://'+main_lang()+'.wikipedia.org/w/api.php?format=json&action=query&prop=langlinks&lllimit=500&titles=' + encodeURI(string2title(states[2])) + '&redirects=&callback=?',
