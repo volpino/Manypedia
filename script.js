@@ -601,7 +601,7 @@ function process_translation(lang_id, page_name) {
                 add_images("#page2", "#img2");
                 correct_links_page2();
             }
-            $("#source2").html('<p>Source: <a target="_blank" href="http://'+lang_id+'.wikipedia.org/wiki/'+page_name+'">"'+page_name.replace(/_/g, " ")+'" from the '+lang_set[lang_id]+' Wikipedia  - http://'+lang_id+'.wikipedia.org/wiki/'+page_name+' (open in new window)</a> released under Creative Commons Attribution-ShareAlike License.</p>'); 
+            $("#source2").html('<p>Source: <a target="_blank" href="http://'+lang_id+'.wikipedia.org/wiki/'+page_name+'">"'+page_name.replace(/_/g, " ")+'" from the '+lang_set[lang_id]+' Wikipedia  - http://'+lang_id+'.wikipedia.org/wiki/'+page_name+' (open in new window)</a> released under Creative Commons Attribution-ShareAlike License.</p>');
             if (!translation_disabled) {
                 $("#tag_cloud2").html("<p style='font-size:20px;'>Translation from "+lang_set[lang_id]+" to "+lang_set[main_lang()]+" in progress...</p>");
                 lang_id = ('he' == lang_id) ? 'iw' : lang_id;
@@ -656,6 +656,11 @@ $(document).ready(function () {
         }
         if (states.length >= 3) {
             if (string2title(states[2]) !== string2title(current_page) || main_lang() !== current_main || $('#lang_select option').size() <= 1) {
+                if (!(states[3]) && current_trans) {
+                  states[3] = current_trans;
+                  $.History.go(states.join("|"));
+                  return;
+                }
                 process_search(states[2]);
                 current_page = states[2];
                 current_main = states[1];
