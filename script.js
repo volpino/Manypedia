@@ -11,7 +11,8 @@ var originalStopwords = $.dynaCloud.stopwords.slice(0);
 $.ajaxSetup ({
     cache: false
 });
-$.translate.load("ABQIAAAALg5ASpxcQqRf8hqsKy6QYxTzZQSsR8IRNiyECrZ4busWivGnRxR3iX2pXTFcZq4PpUkOGgr3Y4XVlg");
+//$.translate.load("ABQIAAAALg5ASpxcQqRf8hqsKy6QYxTzZQSsR8IRNiyECrZ4busWivGnRxR3iX2pXTFcZq4PpUkOGgr3Y4XVlg");
+//$.translate.load("F031195DC2A4A2C68864175BDBA599852E80B199");
 var ajax_load = "<div class='loading_ajax'><img src='img/load.gif' alt='loading...' /><br/><br/>Loading...Please Wait</div>";
 var loadUrl = "ajax/load.php";
 var current_page = "";
@@ -556,6 +557,47 @@ function show_comparison_data() {
     $.facebox(msg);
 }
 
+function googleSectionalElementInit() {
+    new google.translate.SectionalElement({
+        sectionalNodeClassName: 'content',
+        controlNodeClassName: 'control',
+        background: '#eeeeee'
+    }, 'google_sectional_element');
+}
+
+function translation_loaded() {
+    var l = $(".goog-te-sectional-gadget-link-text");
+    if (l.length == 0) {
+        setTimeout(translation_loaded, 2000);
+    }
+    else {
+        //$(".goog-te-sectional-gadget-link-text").each(function() {$(this).click();});
+        $("#tag_cloud2").empty();
+        l.show(0);
+        l.css({fontSize: "20px"});
+        l.css({opacity:0});
+        for (var i=0; i<2; i++) {
+            l.animate({opacity:1}, 800);
+            l.animate({opacity:0.25}, 800);
+        }
+        l.animate({opacity:1}, 800);
+    }
+}
+
+function check_translation_complete() {
+    if (!$(".translated-ltr").length) {
+        setTimeout(check_translation_complete, 1000);
+    }
+    else {
+        setTimeout(function() {
+          $("#tag_cloud2").text("Translation complete!");
+          if (!$.browser.msie ) {
+              $('#page2').dynaCloud('#tag_cloud2');
+          }
+        }, 2000);
+    }
+}
+
 function process_translation(lang_id, page_name) {
     var states = window.location.hash.split("|");
     correct_links_page1(false);
@@ -568,8 +610,7 @@ function process_translation(lang_id, page_name) {
         msg += " (<a href='javascript:enable_translation()'>enable translation into "+lang_set[main_lang()]+"</a>)";
     }
     else {
-        msg += " (translated into "+lang_set[main_lang()]+
-               " <a href='javascript:disable_translation()'>disable translation</a>)";
+        msg += " (<a href='javascript:disable_translation()'>disable translation</a>)";
     }
     $("#page2_title").html(msg);
 
@@ -601,7 +642,20 @@ function process_translation(lang_id, page_name) {
         url: loadUrl + "?url=" + url,
         success: function(data) {
             var content = $("#page2")[0];
-            content = replaceHtml(content, data);
+            var new_content = $("<div/>");
+            var current_span = $("<span/>").addClass("content").append($("<div/>").addClass("control"));
+            var counter = 1;
+            $("<div/>").html(data).children().each(function (k, v) {
+                if (counter % 50 === 0) {
+                    new_content.append(current_span);
+                    current_span = $("<span/>").addClass("content").append($("<div/>").addClass("control"));
+                }
+                current_span.append($(v));
+                counter += 1;
+            });
+            new_content.append(current_span);
+
+            content = replaceHtml(content, new_content.html());  //data);
             /*fix_internal_links("#page2");*/
             if (!$.browser.msie ) {
                 add_images("#page2", "#img2");
@@ -609,11 +663,11 @@ function process_translation(lang_id, page_name) {
             }
             $("#source2").html('<p>Source: <a target="_blank" href="http://'+lang_id+'.wikipedia.org/wiki/'+page_name+'">"'+page_name.replace(/_/g, " ")+'" from the '+lang_set[lang_id]+' Wikipedia  - http://'+lang_id+'.wikipedia.org/wiki/'+page_name+' (open in new window)</a> released under Creative Commons Attribution-ShareAlike License.</p>');
             if (!translation_disabled) {
-                $("#tag_cloud2").html("<p style='font-size:20px;'>Translation from "+lang_set[lang_id]+" to "+lang_set[main_lang()]+" in progress...</p>");
+                $("#tag_cloud2").html("<p style='font-size:20px;'>Loading translation...</p>");
                 lang_id = ('he' == lang_id) ? 'iw' : lang_id;
                 var lang_main = main_lang();
                 lang_main = ('he' == lang_main) ? 'iw' : lang_main;
-                var tran_req = $("#page2").translateTextNodes(lang_id, lang_main, {
+                /*var tran_req = $("#page2").translateTextNodes(lang_id, lang_main, {
                     complete: function() {
                         $("#tag_cloud2").text("Translation complete!");
                         if (!$.browser.msie ) {
@@ -627,6 +681,12 @@ function process_translation(lang_id, page_name) {
                     }
                 });
                 translate_requests.push(tran_req);
+                */
+                var url = '//translate.google.com/translate_a/element.js?cb=googleSectionalElementInit&ug=section&hl='+lang_main;
+                $.getScript(url, function() {
+                  translation_loaded();
+                  check_translation_complete();
+                });
             }
             else {
                 if (!$.browser.msie ) {

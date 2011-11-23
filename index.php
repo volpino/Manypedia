@@ -18,7 +18,6 @@
         <link href="style_wiki.css" rel="stylesheet" type="text/css" />
         <script src="https://www.google.com/jsapi?key=ABQIAAAAMzzSSWDhjeTnoqeE_IchWhS76WXARIgmns88qvycGcR5BzD59xRgACa5fDWFCZAqwafrsKvxGW_Tlw" type="text/javascript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-        <script type="text/javascript" src="jquery.translate-1.4.7-debug-all.js"></script>
         <script type="text/javascript" src="jquery.history.js"></script>
         <link rel="stylesheet" href="jquery.autocomplete.css" type="text/css" />
         <script type="text/javascript" src="jquery.bgiframe.min.js"></script>
@@ -175,8 +174,8 @@
                         <h3 id="page1_title"></h3>
                         <div id="page1_info">
                             <div id="img1"></div>
+                            <div id="stats2"></div>
                             <div id="tag_cloud1"></div>
-                            <div id="stats1"></div>
                         </div>
                     </div>
                     <div id="page1">
@@ -188,8 +187,8 @@
                         <h3 id="page2_title"></h3>
                         <div id="page2_info">
                             <div id="img2"></div>
-                            <div id="tag_cloud2"></div>
                             <div id="stats2"></div>
+                            <div id="tag_cloud2"></div>
                         </div>
                     </div>
                     <div id="page2">
