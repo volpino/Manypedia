@@ -174,7 +174,7 @@
                         <h3 id="page1_title"></h3>
                         <div id="page1_info">
                             <div id="img1"></div>
-                            <div id="stats2"></div>
+                            <div id="stats1"></div>
                             <div id="tag_cloud1"></div>
                         </div>
                     </div>

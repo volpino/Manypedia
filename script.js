@@ -393,7 +393,7 @@ function get_about() {
 
 function get_user_stats(user, lang_id) {
     //$("#facebox .content").html("<div class='user_data'>"+ajax_load+"</div>");
-    var url = escape("http://toolserver.org/~soxred93/pcount/index.php?wiki=wikipedia&lang="+lang_id+"&name="+encodeURI(user)+"&uselang="+main_lang());
+    var url = escape("http://toolserver.org/~sonet/soxred93/pcount/index.php?wiki=wikipedia&lang="+lang_id+"&name="+encodeURI(user)+"&uselang="+main_lang());
     $.ajax({
         url: loadUrl + "?url=" + url,
         success: function(data) {
