@@ -83,6 +83,11 @@ lang_set.vi = "Vietnamese";
 lang_set.cy = "Welsh";
 lang_set.yi = "Yiddish";
 
+var google_set = {};
+google_set.zh = "zh-CN";
+google_set.he = "iw";
+
+
 function replaceHtml(el, html) {
     var oldEl = typeof el === "string" ? document.getElementById(el) : el;
     /*@cc_on // Pure innerHTML is slightly faster in IE
@@ -643,7 +648,9 @@ function process_translation(lang_id, page_name) {
         success: function(data) {
             var content = $("#page2")[0];
             var new_content = $("<div/>");
-            var current_span = $("<span/>").addClass("content").append($("<div/>").addClass("control"));
+            var google_lang_id = google_set[lang_id] || lang_id;
+            var current_span = $("<span/>").addClass("content").attr("lang", google_lang_id).
+                               append($("<div/>").addClass("control"));
             var counter = 1;
             $("<div/>").html(data).children().each(function (k, v) {
                 if (counter % 50 === 0) {
