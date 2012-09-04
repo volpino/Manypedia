@@ -414,9 +414,9 @@ function get_stats(lang_id, page_name, expression) {
         var first = new Date(data.first_edit.timestamp*1000);
         var last = new Date(data.last_edit*1000);
         var res = "<hr/>Total revisions: <b>"+data.count+"</b> - <i>Created on "+
-                  first.getDay()+"/"+(first.getMonth()+1)+"/"+first.getFullYear()+" by "+"<a href='#loading' onclick='get_user_stats(\""+encodeURI(data.first_edit.user)+"\",\""+lang_id+"\");' rel='facebox'>"+data.first_edit.user+"</a>"+
+                  first.getDate()+"/"+(first.getMonth()+1)+"/"+first.getFullYear()+" by "+"<a href='#loading' onclick='get_user_stats(\""+encodeURI(data.first_edit.user)+"\",\""+lang_id+"\");' rel='facebox'>"+data.first_edit.user+"</a>"+
                   "</i> - <i>Last edit: "+
-                  last.getDay()+"/"+(last.getMonth()+1)+"/"+last.getFullYear()+"</i> - "+
+                  last.getDate()+"/"+(last.getMonth()+1)+"/"+last.getFullYear()+"</i> - "+
                   "<a href='http://sonetlab.fbk.eu/wikitrip/#|"+lang_id+"|"+page_name+"' target='_blank'>See gender and world location of editors</a><br />"+
                   "Number of editors: <b>"+data.editor_count+
                   "</b> - Top 5 editors: ";
