@@ -1,10 +1,26 @@
+<?php
+    if (isset($_GET["_escaped_fragment_"])) {
+        $vars = explode("|", htmlspecialchars(urldecode($_GET["_escaped_fragment_"])));
+        Header("HTTP/1.1 301 Moved Permanently");
+        Header("Location: http://manypedia.com/".$vars[1]."/".$vars[2]."/".$vars[3]);
+        die();
+    }
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php include("db_functions.php"); ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>
-        Manypedia - Comparing Linguistic Points Of View (LPOV) of different language Wikipedias!
+        <?php
+            if (isset($_GET["lang1"]) && isset($_GET["lang1"]) && isset($_GET["page"])) {
+                echo 'Manypedia - Comparing page "'. htmlspecialchars($_GET["page"]).'" ('.htmlspecialchars($_GET["lang1"]).'|'.htmlspecialchars($_GET["lang2"]).')';
+            }
+            else {
+                echo "Manypedia - Comparing Linguistic Points Of View (LPOV) of different language Wikipedias!";
+            }
+        ?>
         </title>
         <meta name="generator" content="vim" />
         <meta name="author" content="fox"/>
@@ -32,6 +48,13 @@
         <script src="facebox/facebox.js" type="text/javascript"></script>
         <script src="jquery.toptips.js" type="text/javascript"></script>
         <script type="text/javascript" src="script.js"></script>
+        <?php
+            if (isset($_GET["lang1"]) && isset($_GET["lang1"]) && isset($_GET["page"])) {
+                echo '<script type="text/javascript">';
+                echo '$.History.go("|'. htmlspecialchars($_GET["lang1"]).'|'.htmlspecialchars($_GET["page"]).'|'.htmlspecialchars($_GET["lang2"]).'");';
+                echo '</script>';
+            }
+        ?>
         <script type="text/javascript">
           var _gaq = _gaq || [];
           _gaq.push(['_setAccount', 'UA-56174-20']);

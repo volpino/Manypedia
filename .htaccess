@@ -1,0 +1,4 @@
+Options +FollowSymlinks
+
+RewriteEngine on
+RewriteRule ^([a-z][a-z])/([^/]+)/([a-z][a-z])$ http://manypedia.com/index.php?lang1=$1&lang2=$3&page=$2 [R]

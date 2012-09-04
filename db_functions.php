@@ -46,7 +46,7 @@ function get_featured() {
     $result = mysql_query($qry);
     $res = "";
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $res .= '<a href="#|'.$row["first_lang"]."|".$row["page"]."|".$row["second_lang"].'">'.str_replace("_", " ", $row["page"])." <img alt='flag' src='img/flags/".$row["first_lang"].".png'/> | <img alt='flag' src='img/flags/".$row["second_lang"].".png' /></a><br/>";
+        $res .= '<a href="#!|'.$row["first_lang"]."|".$row["page"]."|".$row["second_lang"].'">'.str_replace("_", " ", $row["page"])." <img alt='flag' src='img/flags/".$row["first_lang"].".png'/> | <img alt='flag' src='img/flags/".$row["second_lang"].".png' /></a><br/>";
     }
     mysql_free_result($result);
     return $res;
@@ -57,7 +57,7 @@ function get_one_featured() {
     $result = mysql_query($qry);
     $res = "";
     $row = mysql_fetch_array($result, MYSQL_ASSOC);
-    $res .= "|".$row["first_lang"]."|".$row["page"]."|".$row["second_lang"];
+    $res .= "!|".$row["first_lang"]."|".$row["page"]."|".$row["second_lang"];
     mysql_free_result($result);
     return $res;
 }
@@ -83,7 +83,7 @@ function most_searched() {
     $result = mysql_query($qry);
     $res = "";
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $res .= '<a href="#|'.$row["first_lang"]."|".$row["page"]."|".$row["second_lang"].'">'.str_replace("_", " ", $row["page"])." <img alt='flag' src='img/flags/".$row["first_lang"].".png'/> | <img alt='flag' src='img/flags/".$row["second_lang"].".png' /></a><br/>";
+        $res .= '<a href="#!|'.$row["first_lang"]."|".$row["page"]."|".$row["second_lang"].'">'.str_replace("_", " ", $row["page"])." <img alt='flag' src='img/flags/".$row["first_lang"].".png'/> | <img alt='flag' src='img/flags/".$row["second_lang"].".png' /></a><br/>";
     }
     mysql_free_result($result);
     return $res;
@@ -99,7 +99,7 @@ function last_searched() {
     $result = mysql_query($qry);
     $res = "";
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $res .= '<a href="#|'.$row["first_lang"]."|".$row["page"]."|".$row["second_lang"].'">'.str_replace("_", " ", $row["page"])." <img alt='flag' src='img/flags/".$row["first_lang"].".png'/> | <img alt='flag' src='img/flags/".$row["second_lang"].".png' /></a><br/>";
+        $res .= '<a href="#!|'.$row["first_lang"]."|".$row["page"]."|".$row["second_lang"].'">'.str_replace("_", " ", $row["page"])." <img alt='flag' src='img/flags/".$row["first_lang"].".png'/> | <img alt='flag' src='img/flags/".$row["second_lang"].".png' /></a><br/>";
     }
     mysql_free_result($result);
     return $res;
